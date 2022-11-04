@@ -145,4 +145,8 @@ $user = User::first();
 $user->createToken('token-name');
 ```
 Copy the generated bearer token and use it to test the api like below:
-`+plainTextToken: "12|VuALmjwNK7N0rlkM8hfyg7Aavolmlsk1MVj9RB3V" `
+```
++plainTextToken: "12|VuALmjwNK7N0rlkM8hfyg7Aavolmlsk1MVj9RB3V" 
+```
+
+Run the project by `php artisan serve` to access the API endpoints
