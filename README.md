@@ -72,7 +72,7 @@ Route::post("create-time-block",'App\Http\Controllers\AppointmentTimeController@
 ```
 
 ### Get all available appointment times
-http://localhost:8000/api/create-time-block
+http://localhost:8000/api/times
 
 ```
 Route::get('times', 'App\Http\Controllers\AppointmentTimeController@index');
