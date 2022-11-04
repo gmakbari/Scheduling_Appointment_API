@@ -1,64 +1,148 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400"></a></p>
+# Restful API for Scheduling Appointment
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+### API design
+You are asked to design a simple appointment scheduling API that allows clinicians to create available "blocks" of time that are visible for patients to select.
+The API will be designed to allow the clients to send their blocks of time in JSON format in a single request send multiple available records and the API succeed, returns with success message with status code 200 otherwise, the API responses with exception error message with related status code to inform the client what is missing, or the request is empty.
+The API will be accessible with Bearer Token which should be generated in backend side and require a user account.
 
-## About Laravel
+Unit test is applied for just one endpoint creating blocks of time as sample.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+### API choice
+To design and create such a system, we have different approaches like REST and SOAP API. We are going to select REST API for this because it is very light wight, fast, scalable, extendable, etc and support JSON data format.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### Frameworks
+We are going to choose the Laravel MVC framework to design this API because Laravel is a fine choice for PHP developers to use for building an API, especially when a project's requirements are not precisely defined. It's a comprehensive framework suitable for any kind of web development, is logically structured, and enjoys strong community support.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### Database
+MySQL RDBMS
+ Tables (entities)
+1 – appointment_time: Storing all blocks of time with their status which reserved or available.
+2 – reserved_time: Storing reserved time and patients’ records
+3 – clinician: Storing basic details about clinicians
 
-## Learning Laravel
+Diagram there just get method mentioned but there supports multiple methods like `POST`, `PUT` and `DELETE` as well. 
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+![This is an image](https://github.com/gmakbari/eComRestAPI/blob/master/public/diagram.png)
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 1500 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+Some basic endpoints which will be available for clinicians to deal with their scheduling appointments.
+1.	Create blocks of time
+2.	List all available times
+3.	Get specific time details
+4.	Update specific details of time
+5.	Delete specific time
 
-## Laravel Sponsors
+### Create blocks of time
+http://localhost:8000/api/create-time-block
+```
+Route::post("create-time-block",'App\Http\Controllers\AppointmentTimeController@store');
+```
+#### Request
+```
+{
+    "data": [
+        {
+        "date": "2022-11-3",
+        "time": "9:00",
+        "clinician_id": 1
+        },
+        {
+        "date": "2022-11-3",
+        "time": "8:00",
+        "clinician_id": 1
+        }
+    ]
+}
+```
+#### Response
+```
+[
+    {
+        "date": "2022-11-3",
+        "time": "9:00",
+        "status": 1,
+        "clinician_id": 1
+    },
+    {
+        "date": "2022-11-3",
+        "time": "8:00",
+        "status": 1,
+        "clinician_id": 1
+    }
+]
+```
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+### Get all available appointment times
+http://localhost:8000/api/create-time-block
 
-### Premium Partners
+```
+Route::get('times', 'App\Http\Controllers\AppointmentTimeController@index');
+```
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[Many](https://www.many.co.uk)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[OP.GG](https://op.gg)**
-- **[WebReinvent](https://webreinvent.com/?utm_source=laravel&utm_medium=github&utm_campaign=patreon-sponsors)**
-- **[Lendio](https://lendio.com)**
+#### Responses
+```
+{
+    "data": [
+        {
+            "date": "2022-11-04",
+            "time": "16:44:00",
+            "status": 1,
+            "clinician_id": 2
+        },
+        {
+            "date": "2022-11-04",
+            "time": "16:47:00",
+            "status": 1,
+            "clinician_id": 2
+        },
+        {
+            "date": "2022-11-04",
+            "time": "16:48:00",
+            "status": 1,
+            "clinician_id": 2
+        },
+        {
+            "date": "2022-11-04",
+            "time": "16:48:00",
+            "status": 1,
+            "clinician_id": 2
+        },
+        {
+            "date": "2022-11-03",
+            "time": "09:00:00",
+            "status": 1,
+            "clinician_id": 1
+        },
+        {
+            "date": "2022-11-03",
+            "time": "08:00:00",
+            "status": 1,
+            "clinician_id": 1
+        }
+    ]
+}
+```
 
-## Contributing
+### There are other endpoints available for client to use them like updating existing records, removing or getting back the details of a specific time record.
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+### Guide line on how to setup the project
+Frist of clone the repository in your local server
 
-## Code of Conduct
+Go inside the project directory
+`cd Scheduling_Appointment_API`
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+Run `composer update`
 
-## Security Vulnerabilities
+Run the below command to create tables and migration and do not forget to create database and replace in the `env` file before.
+`php artisan migrate`
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+Inserting some fake data by factory already configured in the project
+`php artisan db:seed`
 
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Create a token key for the client to be able using the API
+```
+php artisan tinker
+$user = User::first();
+$user->createToken('token-name');
+```
+Copy the generated bearer token and use it to test the api like below:
+`+plainTextToken: "12|VuALmjwNK7N0rlkM8hfyg7Aavolmlsk1MVj9RB3V" `
